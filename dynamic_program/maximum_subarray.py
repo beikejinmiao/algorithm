@@ -41,20 +41,9 @@ def max_sub_sum_linear2(nums):
     return _max_
 
 
-def max_sub_sum_ljm(nums):
-    _max_ = max(nums)
-    _sum_ = 0
-    for i in range(len(nums)):
-        if _sum_ >= 0:
-            _sum_ += nums[i]
-        print(i, _sum_, nums[i])
-        _max_ = max(_sum_, _max_)
-    return _max_
-
-
 if __name__ == '__main__':
     array = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
     # print(max_sub_sum_square(array))
-    print(max_sub_sum_ljm(array))
+    print(max_sub_sum_linear2(array))
 
 
