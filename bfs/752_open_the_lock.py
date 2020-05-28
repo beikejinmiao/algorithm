@@ -27,32 +27,58 @@ def _target_in_deadends(target, deadends):
     return arrive
 
 
+def contains(x, ordered):
+    """
+    binary search
+    :param x:
+    :param ordered: sorted
+    :return:
+    """
+    if len(ordered) <= 0:
+        return False
+    if len(ordered) == 1:
+        return x == ordered[0]
+
+    center = len(ordered) // 2
+    if x == ordered[center]:
+        return True
+    elif x > ordered[center]:
+        # right
+        return contains(x, ordered[center + 1:])
+    else:
+        # left
+        return contains(x, ordered[:center])
+
+
+def asint(x):
+    return int("".join(map(str, x)))
+
+
 def open_lock(target, deadends):
-    deadends = _to_list(deadends)
-    start = _to_list("0000")
-    target = _to_list(target)
-    if not _target_in_deadends(target, _to_list(deadends)):
+    if not _target_in_deadends(_to_list(target), _to_list(deadends)):
         return -1
 
     step = 0
-    nodes, existed_nodes = [start], [start, ]
+    target, deadends = int(target), sorted(map(int, deadends))
+    nodes, visited = [(_to_list("0000"), 0), ], {0}
     while len(nodes) > 0:
-        nodes = [node for node in nodes if node not in deadends]
+        nodes = [node for node in nodes if not contains(node[1], deadends)]
         if len(nodes) <= 0:
             return -1
 
         for i in range(len(nodes)):
-            node = nodes.pop(0)
+            node = nodes.pop(0)[0]
             for j in range(len(node)):
                 neighbors = _neighbors(node[j])
                 for x in neighbors:
                     _node = node.copy()
                     _node[j] = x
-                    if _node == target:
+                    _inode = asint(_node)
+                    if _inode == target:
                         return step + 1
-                    if _node not in existed_nodes:
-                        nodes.append(_node)
-                        existed_nodes.append(_node)
+                    if _inode not in visited:
+                        nodes.append((_node, _inode))
+                        visited.add(_inode)
         step += 1
     return -1
 
